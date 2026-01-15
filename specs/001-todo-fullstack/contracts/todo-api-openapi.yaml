@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  title: Todo API
+  description: API for managing todo tasks with user authentication and authorization
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.yourdomain.com
+    description: Production server
+paths:
+  /api/{user_id}/tasks:
+    get:
+      summary: Get all tasks for a user
+      description: Retrieve a list of all tasks belonging to the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user whose tasks to retrieve
+          schema:
+            type: string
+        - name: completed
+          in: query
+          required: false
+          description: Filter tasks by completion status
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful response with list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoTask'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+    post:
+      summary: Create a new task for a user
+      description: Create a new todo task for the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user creating the task
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTodoTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoTask'
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+      security:
+        - bearerAuth: []
+  /api/{user_id}/tasks/{id}:
+    get:
+      summary: Get a specific task
+      description: Retrieve a specific task by ID for the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoTask'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+    put:
+      summary: Update a specific task
+      description: Update an existing task for the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodoTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoTask'
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Delete a specific task
+      description: Delete a specific task for the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+  /api/{user_id}/tasks/{id}/complete:
+    patch:
+      summary: Update task completion status
+      description: Toggle or set the completion status of a specific task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The ID of the task to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                completed:
+                  type: boolean
+                  description: The new completion status for the task
+              required:
+                - completed
+      responses:
+        '200':
+          description: Task completion status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoTask'
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden - User does not have access to this resource
+        '404':
+          description: Task not found
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication endpoint
+  schemas:
+    TodoTask:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the task
+        title:
+          type: string
+          description: Task title
+          maxLength: 200
+        description:
+          type: string
+          description: Optional task description
+          nullable: true
+          maxLength: 1000
+        completed:
+          type: boolean
+          description: Whether the task is completed
+          default: false
+        user_id:
+          type: string
+          description: ID of the user who owns this task
+        created_at:
+          type: string
+          format: date-time
+          description: When the task was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the task was last updated
+      required:
+        - id
+        - title
+        - completed
+        - user_id
+        - created_at
+        - updated_at
+    CreateTodoTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Task title
+          maxLength: 200
+        description:
+          type: string
+          description: Optional task description
+          nullable: true
+          maxLength: 1000
+      required:
+        - title
+    UpdateTodoTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Updated task title
+          maxLength: 200
+        description:
+          type: string
+          description: Updated task description
+          nullable: true
+          maxLength: 1000
+        completed:
+          type: boolean
+          description: Updated completion status

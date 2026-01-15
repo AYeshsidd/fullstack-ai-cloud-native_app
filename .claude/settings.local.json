@@ -5,7 +5,11 @@
       "Bash(powershell -Command:*)",
       "Bash(git checkout:*)",
       "Bash(mkdir:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(dir \"specs/001-todo-fullstack/checklists\" -PathType Container)",
+      "Bash(npm install)",
+      "Bash(npm run dev)",
+      "Bash(npx tailwindcss -i ./src/app/globals.css -o ./src/app/output.css --watch)"
     ]
   }
 }

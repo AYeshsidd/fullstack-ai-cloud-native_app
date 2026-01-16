@@ -1,8 +1,8 @@
 import React from 'react';
-import { TodoTaskRead } from '../../../backend/schemas/todo'; // This would be an API response type in a real app
+import { TodoTask } from '../lib/api-client';
 
 interface TodoItemProps {
-  todo: TodoTaskRead;
+  todo: TodoTask;
   onDelete: (id: string) => void;
   onToggleComplete: (id: string, completed: boolean) => void;
 }

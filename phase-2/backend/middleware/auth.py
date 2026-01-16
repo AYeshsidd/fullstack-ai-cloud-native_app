@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from ..core.security import verify_token, get_current_user_id_from_token
+from core.security import verify_token, get_current_user_id_from_token
 from typing import Optional, Dict
 
 

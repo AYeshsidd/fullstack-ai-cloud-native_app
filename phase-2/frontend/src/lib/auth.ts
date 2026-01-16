@@ -1,11 +1,4 @@
-// Mock Better Auth implementation for now
-// In a real implementation, this would use the actual Better Auth library
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+import { apiClient, User } from './api-client';
 
 export interface AuthState {
   user: User | null;
@@ -13,58 +6,92 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-export const authState: AuthState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+// Initialize auth state from localStorage if available
+const getInitialAuthState = (): AuthState => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('access_token');
+    // Note: We can't decode the JWT to get user info without a library
+    // So we just set isAuthenticated based on token presence
+    return {
+      user: null, // We don't know the user until we call an API
+      isAuthenticated: !!token,
+      isLoading: false,
+    };
+  }
+
+  return {
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+  };
 };
+
+export const authState: AuthState = getInitialAuthState();
 
 export const mockAuth = {
   signIn: async (email: string, password: string) => {
-    // In a real implementation, this would call the actual Better Auth API
-    console.log('Sign in attempt with:', email);
+    try {
+      const response = await apiClient.login({ email, password });
 
-    // Mock response
-    const user: User = {
-      id: 'mock-user-id',
-      email,
-      name: 'Mock User',
-    };
+      if (response.success && response.data) {
+        // Store token in localStorage
+        localStorage.setItem('access_token', response.data.access_token);
 
-    authState.user = user;
-    authState.isAuthenticated = true;
-    authState.isLoading = false;
+        // Update auth state
+        authState.user = response.data.user;
+        authState.isAuthenticated = true;
 
-    return { user, error: null };
+        return { user: response.data.user, error: null };
+      } else {
+        return { user: null, error: response.error || 'Login failed' };
+      }
+    } catch (error: any) {
+      return { user: null, error: error.message || 'Login failed' };
+    }
   },
 
   signUp: async (email: string, password: string, name: string) => {
-    // In a real implementation, this would call the actual Better Auth API
-    console.log('Sign up attempt with:', email);
+    try {
+      const response = await apiClient.register({ email, password, name });
 
-    // Mock response
-    const user: User = {
-      id: 'mock-user-id',
-      email,
-      name,
-    };
+      if (response.success && response.data) {
+        // Store token in localStorage
+        localStorage.setItem('access_token', response.data.access_token);
 
-    authState.user = user;
-    authState.isAuthenticated = true;
-    authState.isLoading = false;
+        // Update auth state
+        authState.user = response.data.user;
+        authState.isAuthenticated = true;
 
-    return { user, error: null };
+        return { user: response.data.user, error: null };
+      } else {
+        return { user: null, error: response.error || 'Registration failed' };
+      }
+    } catch (error: any) {
+      return { user: null, error: error.message || 'Registration failed' };
+    }
   },
 
   signOut: async () => {
-    // In a real implementation, this would call the actual Better Auth API
-    console.log('Sign out attempt');
+    try {
+      // Call logout endpoint
+      await apiClient.logout();
 
-    authState.user = null;
-    authState.isAuthenticated = false;
-    authState.isLoading = false;
+      // Clear token from localStorage
+      localStorage.removeItem('access_token');
 
-    return { error: null };
+      // Update auth state
+      authState.user = null;
+      authState.isAuthenticated = false;
+
+      return { error: null };
+    } catch (error: any) {
+      // Even if logout API fails, still clear local state
+      localStorage.removeItem('access_token');
+      authState.user = null;
+      authState.isAuthenticated = false;
+
+      return { error: error.message || 'Logout failed' };
+    }
   },
 
   getUser: () => {
@@ -72,14 +99,45 @@ export const mockAuth = {
   },
 
   isAuthenticated: () => {
+    // Check both state and token existence
+    if (authState.isAuthenticated) return true;
+
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      return !!token;
+    }
+
     return authState.isAuthenticated;
   },
 
   getCurrentUser: () => {
     return authState.user;
   },
-};
 
-// Export the actual Better Auth library when we integrate it
-// export { auth } from "better-auth";
-// export type { Session, User } from "better-auth";
+  // Method to refresh user data from the API
+  refreshUser: async () => {
+    try {
+      const response = await apiClient.getCurrentUser();
+
+      if (response.success && response.data) {
+        authState.user = response.data;
+        authState.isAuthenticated = true;
+        return response.data;
+      } else {
+        // If API call fails, check if token exists and set isAuthenticated accordingly
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('access_token');
+          authState.isAuthenticated = !!token;
+        }
+        return null;
+      }
+    } catch (error) {
+      // If API call fails, check if token exists and set isAuthenticated accordingly
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('access_token');
+        authState.isAuthenticated = !!token;
+      }
+      return null;
+    }
+  },
+};

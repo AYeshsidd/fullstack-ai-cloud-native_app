@@ -1,6 +1,6 @@
 from sqlmodel import create_engine, Session
 from typing import Generator
-from ..core.config import settings
+from core.config import settings
 
 # Create the database engine
 engine = create_engine(

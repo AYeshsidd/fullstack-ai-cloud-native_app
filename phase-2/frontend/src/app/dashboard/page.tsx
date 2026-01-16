@@ -12,14 +12,49 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // In a real implementation, we would get the user from the auth provider
-    const currentUser = mockAuth.getCurrentUser();
-    if (currentUser) {
-      setUserId(currentUser.id);
-    } else {
-      setError('User not authenticated');
-    }
-    setLoading(false);
+    const checkAuth = async () => {
+      try {
+        // First try to get current user from auth
+        let currentUser = mockAuth.getCurrentUser();
+
+        if (!currentUser) {
+          // Try to get user from auth state
+          currentUser = mockAuth.getUser();
+        }
+
+        if (currentUser && currentUser.id) {
+          setUserId(currentUser.id);
+        } else {
+          // If no user in state, try to refresh user data from API
+          const refreshedUser = await mockAuth.refreshUser();
+
+          if (refreshedUser && refreshedUser.id) {
+            setUserId(refreshedUser.id);
+          } else {
+            // Check if there's a token in localStorage that might indicate a logged-in user
+            if (typeof window !== 'undefined') {
+              const token = localStorage.getItem('access_token');
+              if (token) {
+                setError('User session found but user data not loaded. Please log in again.');
+              } else {
+                setError('User not authenticated');
+              }
+            } else {
+              setError('User not authenticated');
+            }
+          }
+        }
+      } catch (err) {
+        setError('Authentication check failed');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Wait a bit to ensure auth state is properly initialized
+    const timer = setTimeout(checkAuth, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAddTodo = (todo: any) => {
@@ -49,11 +84,19 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        <div className="mt-4 text-center">
+          <a
+            href="/auth/signin"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Go to Login
+          </a>
+        </div>
       </div>
     </div>
   );
 
-  const user = mockAuth.getCurrentUser();
+  const user = mockAuth.getCurrentUser() || mockAuth.getUser();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,8 +111,15 @@ export default function DashboardPage() {
           <div>
             <TodoForm userId={userId} onAddTodo={handleAddTodo} />
           </div>
+
           <div>
-            <TodoList userId={userId} />
+            <TodoList userId={userId}/>
+          </div>
+          
+
+
+          <div>
+             
           </div>
         </div>
       </div>

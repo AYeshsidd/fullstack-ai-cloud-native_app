@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer
 from sqlmodel import Session, select
 from datetime import timedelta
-from ...database.session import get_session
-from ...models.user import User, UserCreate
-from ...schemas.user import UserLogin, UserCreate as UserCreateSchema
-from ...core.security import (
+from database.session import get_session
+from models.user import User, UserCreate
+from schemas.user import UserLogin, UserCreate as UserCreateSchema
+from core.security import (
     authenticate_user,
     create_access_token,
     get_password_hash,
     verify_password
 )
-from ...middleware.auth import JWTBearer
+from middleware.auth import JWTBearer
 import uuid
 
 
@@ -149,7 +149,7 @@ def get_current_user(
     Returns:
         User: Current user information
     """
-    from ...core.security import get_current_user_id_from_token
+    from core.security import get_current_user_id_from_token
 
     user_id = get_current_user_id_from_token(token)
     if not user_id:

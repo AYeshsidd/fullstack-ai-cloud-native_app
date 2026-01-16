@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
-from ...database.session import get_session
-from ...models.todo import TodoTask, TodoTaskCreate, TodoTaskUpdate
-from ...models.user import User
-from ...schemas.todo import TodoTaskRead, TodoTaskCreate as TodoTaskCreateSchema, TodoTaskUpdate as TodoTaskUpdateSchema, TodoTaskComplete
-from ...middleware.auth import JWTBearer, get_user_id_from_token
-from ...core.security import get_current_user_id_from_token
+from database.session import get_session
+from models.todo import TodoTask, TodoTaskCreate, TodoTaskUpdate
+from models.user import User
+from schemas.todo import TodoTaskRead, TodoTaskCreate as TodoTaskCreateSchema, TodoTaskUpdate as TodoTaskUpdateSchema, TodoTaskComplete
+from middleware.auth import JWTBearer, get_user_id_from_token
+from core.security import get_current_user_id_from_token
 import uuid
 
 

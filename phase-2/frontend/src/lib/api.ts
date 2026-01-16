@@ -25,9 +25,10 @@ class ApiClient {
    * Get the current authentication token
    */
   private getToken(): string | null {
-    // In a real implementation, this would get the token from Better Auth
+    // Get token from localStorage - should match the key used in auth.ts
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('auth-token');
+      // Try both keys to maintain compatibility
+      return localStorage.getItem('access_token') || localStorage.getItem('auth-token');
     }
     return null;
   }

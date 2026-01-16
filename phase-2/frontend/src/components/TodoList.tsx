@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient } from '../lib/api';
 import { TodoItem } from './TodoItem';
-import { TodoTaskRead } from '../../../backend/schemas/todo'; // This would be an API response type in a real app
+import { apiClient, TodoTask } from '../lib/api-client';
 
 interface TodoListProps {
   userId: string;
 }
 
 export const TodoList: React.FC<TodoListProps> = ({ userId }) => {
-  const [todos, setTodos] = useState<TodoTaskRead[]>([]);
+  const [todos, setTodos] = useState<TodoTask[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +18,7 @@ export const TodoList: React.FC<TodoListProps> = ({ userId }) => {
   const fetchTodos = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get(`/api/users/${userId}/tasks`);
+      const response = await apiClient.getTodos(userId);
 
       if (response.success && response.data) {
         setTodos(response.data);
@@ -34,7 +33,7 @@ export const TodoList: React.FC<TodoListProps> = ({ userId }) => {
   };
 
   const handleDelete = async (id: string) => {
-    const response = await apiClient.delete(`/api/users/${userId}/tasks/${id}`);
+    const response = await apiClient.deleteTodo(userId, id);
 
     if (response.success) {
       setTodos(todos.filter(todo => todo.id !== id));
@@ -44,9 +43,7 @@ export const TodoList: React.FC<TodoListProps> = ({ userId }) => {
   };
 
   const handleToggleComplete = async (id: string, completed: boolean) => {
-    const response = await apiClient.patch(`/api/users/${userId}/tasks/${id}/complete`, {
-      completed: !completed
-    });
+    const response = await apiClient.updateTodoCompletion(userId, id, !completed);
 
     if (response.success && response.data) {
       setTodos(todos.map(todo =>

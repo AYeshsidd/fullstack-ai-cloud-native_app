@@ -33,13 +33,13 @@ export default function HomePage() {
                 <div className="flex space-x-3 md:space-x-4">
                   <Link
                     href="/auth/signin"
-                    className=" px-1 py-1 md:px-4 md:py-2 text-gray-700 hover:text-white hover:bg-indigo-700 transition duration-200 border border-indigo-500 rounded-xl md:rounded-2xl"
+                    className=" px-1 py-1 md:px-4 md:py-2 text-gray-700 hover:shadow-lg hover:shadow-indigo-400 transition duration-200 border  border-indigo-500 rounded-xl md:rounded-2xl"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/signup"
-                    className="px-1 py-1 md:px-4 md:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
+                    className="px-1 py-1 md:px-4 md:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-400 transition duration-200"
                   >
                     Sign Up
                   </Link>

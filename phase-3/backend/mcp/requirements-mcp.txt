@@ -1,0 +1,5 @@
+python-mcp-sdk>=1.0.0
+fastapi>=0.104.1
+sqlmodel>=0.0.8
+pydantic>=2.4.2
+uvicorn>=0.24.0

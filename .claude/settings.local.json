@@ -50,7 +50,23 @@
       "Bash(curl -X GET http://localhost:8000/api/v1/users/e15feac6-2d72-4b2a-8444-4394487857bf/tasks -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMTVmZWFjNi0yZDcyLTRiMmEtODQ0NC00Mzk0NDg3ODU3YmYiLCJleHAiOjE3Njg2MDU0NTJ9.1uBZSWr6nv1ko5kd01Qw-c3slVwGMRJXLNhGQPkYzQo\")",
       "Bash(curl -X POST http://localhost:8000/api/v1/auth/register -H \"Content-Type: application/json\" -d \"{\"\"email\"\":\"\"toggle@test.com\"\",\"\"name\"\":\"\"Toggle Test\"\",\"\"password\"\":\"\"TestPass123\"\"}\")",
       "Bash(curl -X POST http://localhost:8000/api/v1/users/55b55574-d99a-470e-806b-1c897bf9b8d1/tasks -H \"Content-Type: application/json\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NWI1NTU3NC1kOTlhLTQ3MGUtODA2Yi0xYzg5N2JmOWI4ZDEiLCJleHAiOjE3Njg2NDYwNDV9.EXifscjdhTKP-8f-BSfjRcCR9Ycx1N_OpDnrFros5Rw\" -d \"{\"\"title\"\":\"\"Test Toggle Task\"\",\"\"description\"\":\"\"This task will be used to test the toggle functionality\"\",\"\"completed\"\":false}\")",
-      "Bash(curl -X PATCH http://localhost:8000/api/v1/users/55b55574-d99a-470e-806b-1c897bf9b8d1/tasks/ab9413be-b12a-416b-a7de-1ba2a91edf66/complete -H \"Content-Type: application/json\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NWI1NTU3NC1kOTlhLTQ3MGUtODA2Yi0xYzg5N2JmOWI4ZDEiLCJleHAiOjE3Njg2NDYwNDV9.EXifscjdhTKP-8f-BSfjRcCR9Ycx1N_OpDnrFros5Rw\" -d \"{\"\"completed\"\":true}\")"
+      "Bash(curl -X PATCH http://localhost:8000/api/v1/users/55b55574-d99a-470e-806b-1c897bf9b8d1/tasks/ab9413be-b12a-416b-a7de-1ba2a91edf66/complete -H \"Content-Type: application/json\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NWI1NTU3NC1kOTlhLTQ3MGUtODA2Yi0xYzg5N2JmOWI4ZDEiLCJleHAiOjE3Njg2NDYwNDV9.EXifscjdhTKP-8f-BSfjRcCR9Ycx1N_OpDnrFros5Rw\" -d \"{\"\"completed\"\":true}\")",
+      "Bash(.specify/scripts/powershell/setup-plan.ps1:*)",
+      "Bash(.specify/scripts/powershell/check-prerequisites.ps1 -Json)",
+      "Bash(pip install:*)",
+      "Bash(python -c:*)",
+      "Bash(dir:*)",
+      "Bash(python:*)",
+      "Bash(powershell:*)",
+      "Bash(ls:*)",
+      "Bash(.specify/scripts/powershell/create-new-feature.ps1:*)",
+      "Bash(.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks)",
+      "Bash(npm run build)",
+      "Bash(timeout:*)",
+      "Bash(curl -s http://127.0.0.1:8000/health)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(git add:*)"
     ]
   }
 }

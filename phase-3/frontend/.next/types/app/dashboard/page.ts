@@ -1,4 +1,4 @@
-// File: D:\Ai_Todo\phase-3\frontend\src\app\dashboard\page.tsx
+// File: D:\full_stack_todo\fullstack-ai-cloud-native_app\phase-3\frontend\src\app\dashboard\page.tsx
 import * as entry from '../../../../src/app/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
